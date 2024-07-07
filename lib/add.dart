@@ -174,14 +174,17 @@ class add extends StatelessWidget {
 
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Reminder added successfully')),
+                          const SnackBar(
+                              content: Text('Reminder added successfully')),
                         );
 
                         Navigator.pop(context, true);
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please fill in all fields and select a date/time')),
+                        const SnackBar(
+                            content: Text(
+                                'Please fill in all fields and select a date/time')),
                       );
                     }
                   },
