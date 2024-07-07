@@ -1,12 +1,42 @@
-///File download from FlutterViz- Drag and drop a tools. For more details visit https://flutterviz.io/
-
 // ignore_for_file: use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:sqflite/sqflite.dart';
 
 // ignore: camel_case_types
 class add extends StatelessWidget {
+  final TextEditingController _eventNameController = TextEditingController();
+  final TextEditingController _eventItemsController = TextEditingController();
+  DateTime? _selectedDateTime;
+
+  Future<Database> initializeDatabase() async {
+    final databasePath = await getDatabasesPath();
+    final path = '$databasePath/reminders.db';
+
+    return openDatabase(
+      path,
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE reminders(id INTEGER PRIMARY KEY, eventName TEXT, eventItems TEXT, eventDateTime TEXT)',
+        );
+      },
+      version: 1,
+    );
+  }
+
+  Future<void> insertReminder(Database db, String eventName, String eventItems,
+      DateTime eventDateTime) async {
+    await db.insert(
+      'reminders',
+      {
+        'eventName': eventName,
+        'eventItems': eventItems,
+        'eventDateTime': eventDateTime.toIso8601String(),
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,10 +44,7 @@ class add extends StatelessWidget {
         elevation: 4,
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
-        title: Image.asset(
-          'assets/images/logo.png',
-          height: 30
-        ),
+        title: Image.asset('assets/images/logo.png', height: 30),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -25,7 +52,7 @@ class add extends StatelessWidget {
             size: 24,
           ),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           },
         ),
       ),
@@ -55,32 +82,12 @@ class add extends StatelessWidget {
             thickness: 1,
             color: Color(0xffa9a9a9),
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
             child: TextField(
-              decoration: InputDecoration(
+              controller: _eventNameController,
+              decoration: const InputDecoration(
                 hintText: 'Event name',
-                hintStyle: TextStyle(
-                  color: Color(0xffa9a9a9),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xffa9a9a9),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xffa9a9a9),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Event items (comma separated)',
                 hintStyle: TextStyle(
                   color: Color(0xffa9a9a9),
                 ),
@@ -99,36 +106,56 @@ class add extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-            child: ElevatedButton(
-              child: const Text('Select date and time'),
-              onPressed: () => {
-                showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2025),
-                ).then((date) {
-                  if (date != null) {
-                    showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    ).then((time) {
-                      if (time != null) {
-                        final selectedDateTime = DateTime(
-                          date.year,
-                          date.month,
-                          date.day,
-                          time.hour,
-                          time.minute,
-                        );
-                        print(selectedDateTime);
-                      }
-                    });
-                  }
-                })
-              },
-            )
+            child: TextField(
+              controller: _eventItemsController,
+              decoration: const InputDecoration(
+                hintText: 'Event items (comma separated)',
+                hintStyle: TextStyle(
+                  color: Color(0xffa9a9a9),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xffa9a9a9),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color(0xffa9a9a9),
+                  ),
+                ),
+              ),
+            ),
           ),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+              child: ElevatedButton(
+                child: const Text('Select date and time'),
+                onPressed: () => {
+                  showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2025),
+                  ).then((date) {
+                    if (date != null) {
+                      showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      ).then((time) {
+                        if (time != null) {
+                          _selectedDateTime = DateTime(
+                            date.year,
+                            date.month,
+                            date.day,
+                            time.hour,
+                            time.minute,
+                          );
+                        }
+                      });
+                    }
+                  })
+                },
+              )),
           //submmit button green
           //cancel button red
           Row(
@@ -137,8 +164,26 @@ class add extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
                 child: ElevatedButton(
-                  onPressed: () {
-                    //submit button
+                  onPressed: () async {
+                    if (_selectedDateTime != null &&
+                        _eventNameController.text.isNotEmpty &&
+                        _eventItemsController.text.isNotEmpty) {
+                      final database = await initializeDatabase();
+                      await insertReminder(database, _eventNameController.text,
+                          _eventItemsController.text, _selectedDateTime!);
+
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Reminder added successfully')),
+                        );
+
+                        Navigator.pop(context, true);
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please fill in all fields and select a date/time')),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
@@ -153,8 +198,10 @@ class add extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     //clear all fields and navigate back
-
-                    Navigator.of(context).pop();
+                    _eventNameController.clear();
+                    _eventItemsController.clear();
+                    _selectedDateTime = null;
+                    Navigator.of(context).pop(true);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
