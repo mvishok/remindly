@@ -1,6 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
+import 'package:remindly/services/notification_service.dart';
 import 'package:sqflite/sqflite.dart';
 
 // ignore: camel_case_types
@@ -34,6 +35,18 @@ class add extends StatelessWidget {
         'eventDateTime': eventDateTime.toIso8601String(),
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    //find interval between now and eventDateTime in seconds
+    int interval = eventDateTime.difference(DateTime.now()).inSeconds;
+
+    //show notification
+    await NotificationService.showNotification(
+      title: eventName,
+      body: eventItems,
+      scheduled: true,
+      interval: interval,
+      summary: "Reminder",
     );
   }
 

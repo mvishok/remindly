@@ -1,6 +1,5 @@
-///File download from FlutterViz- Drag and drop a tools. For more details visit https://flutterviz.io/
-
 import 'package:flutter/material.dart';
+import 'package:remindly/view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatelessWidget {
@@ -100,6 +99,26 @@ class About extends StatelessWidget {
                   fontSize: 18,
                   color: Color(0xff000000),
                 ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) {
+                        return const ViewReminder(title: "titleaa", body: "body");
+                      },
+                      transitionDuration: const Duration(milliseconds: 250),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: const Text("View Profile"),
               ),
               InkWell(
                 child: const Text(

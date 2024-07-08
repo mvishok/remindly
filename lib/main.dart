@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:remindly/services/notification_service.dart';
 import 'reminders.dart';
 
-void main() {
+void main() async {
+  await NotificationService.initializeNotification();
   runApp(const ReminderApp());
 }
 
