@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'about.dart';
@@ -18,6 +19,11 @@ class _ReminderListScreenState extends State<ReminderListScreen> {
   void initState() {
     super.initState();
     _loadReminders();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<void> _loadReminders() async {
@@ -64,7 +70,7 @@ class _ReminderListScreenState extends State<ReminderListScreen> {
             Navigator.of(context).push(
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) {
-                  return About();
+                  return const About();
                 },
                 transitionDuration: const Duration(milliseconds: 250),
                 transitionsBuilder:
@@ -118,6 +124,10 @@ class _ReminderListScreenState extends State<ReminderListScreen> {
                                   where: 'id = ?',
                                   whereArgs: [reminder['id']],
                                 );
+
+                                //cancel scheduled notification
+                                await AwesomeNotifications().cancel(reminder['id']);
+
                                 await _loadReminders();
 
                                 if (context.mounted) {
@@ -139,11 +149,31 @@ class _ReminderListScreenState extends State<ReminderListScreen> {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          navigateToAddReminder();
-        },
-        child: const Icon(Icons.add),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        child: Row(
+          children: [
+            FloatingActionButton(
+              heroTag: 'refresh',
+              onPressed: () {
+                setState(() {
+                  _loadReminders();
+                });
+              },
+              child: const Icon(Icons.refresh),
+            ),
+            const Spacer(),
+            FloatingActionButton(
+              heroTag: 'add',
+              onPressed: () {
+                navigateToAddReminder();
+              },
+              child: const Icon(Icons.add),
+            ),
+            
+          ],
+        ),
       ),
     );
   }

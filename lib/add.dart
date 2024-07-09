@@ -25,9 +25,9 @@ class add extends StatelessWidget {
     );
   }
 
-  Future<void> insertReminder(Database db, String eventName, String eventItems,
-      DateTime eventDateTime) async {
-    await db.insert(
+  Future<bool> insertReminder(Database db, String eventName, String eventItems,
+      DateTime eventDateTime, BuildContext context) async {
+    final id = await db.insert(
       'reminders',
       {
         'eventName': eventName,
@@ -41,13 +41,30 @@ class add extends StatelessWidget {
     int interval = eventDateTime.difference(DateTime.now()).inSeconds;
 
     //show notification
-    await NotificationService.showNotification(
-      title: eventName,
-      body: eventItems,
-      scheduled: true,
-      interval: interval,
-      summary: "Reminder",
-    );
+    if (interval > 5){
+      await NotificationService.showNotification(
+        title: eventName,
+        body: eventItems,
+        nid: id,
+        scheduled: true,
+        interval: interval,
+        summary: "Reminder",
+        payload: {
+          "id": id.toString(),
+        }
+      );
+      return true;
+    } else {
+      //tell user to set a reminder at least 5 seconds from now
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please set a reminder at least 5 seconds from now'),
+          ),
+        );
+      }
+      return false;
+    }
   }
 
   @override
@@ -181,11 +198,17 @@ class add extends StatelessWidget {
                     if (_selectedDateTime != null &&
                         _eventNameController.text.isNotEmpty &&
                         _eventItemsController.text.isNotEmpty) {
+                      
+                      var flag = false;
+                      
                       final database = await initializeDatabase();
-                      await insertReminder(database, _eventNameController.text,
-                          _eventItemsController.text, _selectedDateTime!);
 
                       if (context.mounted) {
+                        flag = await insertReminder(database, _eventNameController.text,
+                          _eventItemsController.text, _selectedDateTime!, context);
+                      }
+
+                      if (context.mounted && flag) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content: Text('Reminder added successfully')),

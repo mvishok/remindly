@@ -1,4 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import '../view.dart';
+import '../main.dart';
 import 'package:flutter/material.dart';
 
 class NotificationService {
@@ -68,14 +70,22 @@ class NotificationService {
       ReceivedAction receivedAction) async {
     debugPrint('onActionReceivedMethod');
     final payload = receivedAction.payload ?? {};
-    if (payload["navigate"] == "true") {
-      // Navigate to the desired screen
+    //open viewReminder class
+    //if payload [id] exists, open viewReminder with the id
+    if (payload.containsKey('id')) {
+      
+      ReminderApp.navigatorKey.currentState?.push(
+        MaterialPageRoute(
+          builder: (context) => ViewReminder(id: int.parse(payload['id']!)),
+        ),
+      );
     }
   }
 
   static Future<void> showNotification({
     required final String title,
     required final String body,
+    required int nid,
     final String? summary,
     final Map<String, String>? payload,
     final ActionType actionType = ActionType.Default,
@@ -90,7 +100,7 @@ class NotificationService {
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: -1,
+        id: nid,
         channelKey: 'high_importance_channel',
         title: title,
         body: body,

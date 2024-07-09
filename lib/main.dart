@@ -10,9 +10,12 @@ void main() async {
 class ReminderApp extends StatelessWidget {
   const ReminderApp({super.key});
 
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Remindly',
       theme: ThemeData(
         useMaterial3: true,
