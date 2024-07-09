@@ -110,6 +110,7 @@ class NotificationService {
         category: category,
         payload: payload,
         bigPicture: bigPicture,
+        icon: 'asset://assets/images/icon.png'
       ),
       actionButtons: actionButtons,
       schedule: scheduled
