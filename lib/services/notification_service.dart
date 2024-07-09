@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class NotificationService {
   static Future<void> initializeNotification() async {
     await AwesomeNotifications().initialize(
-      null,
+      'resource://drawable/notification',
       [
         NotificationChannel(
           channelGroupKey: 'high_importance_channel',
@@ -73,7 +73,6 @@ class NotificationService {
     //open viewReminder class
     //if payload [id] exists, open viewReminder with the id
     if (payload.containsKey('id')) {
-      
       ReminderApp.navigatorKey.currentState?.push(
         MaterialPageRoute(
           builder: (context) => ViewReminder(id: int.parse(payload['id']!)),
@@ -110,7 +109,6 @@ class NotificationService {
         category: category,
         payload: payload,
         bigPicture: bigPicture,
-        icon: 'asset://assets/images/icon.png'
       ),
       actionButtons: actionButtons,
       schedule: scheduled

@@ -42,7 +42,7 @@ flutter_native_splash:
     image: assets/images/splash.png
     icon_background_color: "#03a9f4"
 
-flutter_icons:
+flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/images/splash.png"
