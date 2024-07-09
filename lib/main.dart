@@ -1,9 +1,10 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:remindly/services/notification_service.dart';
 import 'reminders.dart';
+import 'view.dart';
 
-void main() async {
-  await NotificationService.initializeNotification();
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const ReminderApp());
 }
 
@@ -14,14 +15,32 @@ class ReminderApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'Remindly',
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.lightBlue,
+    return FutureBuilder<ReceivedAction?>(
+      future: AwesomeNotifications().getInitialNotificationAction(
+        removeFromActionEvents: false,
       ),
-      home: const ReminderListScreen(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          final receivedAction = snapshot.data!;
+          final payload = receivedAction.payload ?? {};
+          if (payload.containsKey('id')) {
+            ReminderApp.navigatorKey.currentState?.push(
+              MaterialPageRoute(
+                builder: (context) => ViewReminder(id: int.parse(payload['id']!)),
+              ),
+            );
+          }
+        }
+        return MaterialApp(
+          navigatorKey: navigatorKey,
+          title: 'Remindly',
+          theme: ThemeData(
+            useMaterial3: true,
+            colorSchemeSeed: Colors.lightBlue,
+          ),
+          home: const ReminderListScreen(),
+        );
+      },
     );
   }
 }
