@@ -1,0 +1,166 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=Roboto:wght@300;400;500;900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Open Sans", sans-serif;
+}
+
+body {
+    background-color: #26628a;
+    overflow: hidden;
+}
+
+main {
+  position: relative;
+  width: calc(min(90rem, 90%));
+  margin: 0 auto;
+  min-height: 100vh;
+  column-gap: 3rem;
+  padding-block: min(20vh, 3rem);
+}
+
+.bg {
+  position: fixed;
+  top: 0rem;
+  left: -12rem;
+  z-index: -1;
+  opacity: 0;
+}
+
+
+main > div span {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 1rem;
+  color: white;
+}
+
+main > div h1 {
+  text-transform: capitalize;
+  letter-spacing: 0.8px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 900;
+  font-size: clamp(3.4375rem, 3.25rem + 0.75vw, 4rem);
+  background-color: #005baa;
+  background-image: linear-gradient(45deg, #005baa, #000000);
+  background-size: 100%;
+  background-repeat: repeat;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+}
+
+main > div hr {
+  display: block;
+  background: #ff917c;
+  height: 0.25rem;
+  width: 6.25rem;
+  border: none;
+  margin: 1.125rem 0 1.875rem 0;
+}
+
+main > div p {
+  line-height: 1.6;
+}
+
+main a {
+  display: inline-block;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #717171;
+  font-weight: 500;
+  background: #fff;
+  border-radius: 3.125rem;
+  transition: 0.3s ease-in-out;
+}
+
+main > div > a {
+  border: 2px solid #c2c2c2;
+  margin-top: 2.188rem;
+  padding: 0.625rem 1.875rem;
+}
+
+main > div > a:hover {
+  border: 0.125rem solid #005baa;
+  color: #005baa;
+}
+
+.swiper {
+  width: 100%;
+  padding-top: 3.125rem;
+}
+
+@media screen and (min-width: 48rem) {
+  main {
+    display: flex;
+    align-items: center;
+  }
+
+}
+@media screen and (min-width: 93.75rem) {
+  .swiper {
+    width: 85%;
+  }
+}
+
+.bg {
+    opacity: 0.1;
+  }
+
+.btn {
+    width: 200px;
+    height: 60px;
+    border: none;
+    background-color: #ddd;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn__logo {
+    width: 30px;
+    height: 30px;
+    float: left;
+    margin: 10px 0 14px 20px;
+    position: relative;
+  }
+  
+  .btn__content {
+    width: 110px;
+    height: 28px;
+    font-size: 12px;
+    float: right;
+    margin-right: 15px;
+    text-align: left;
+  }
+  .btn__content + .btn__content {
+    margin-top: 2px;
+  }
+  
+  .btn__content--big {
+    height: 22px;
+    font-size: 22px;
+    margin-top: 8px;
+  }
+  
+  .btn--ios {
+    background-color: #3b5a9b;
+    color: #fff;
+  }
+  .btn--ios:hover {
+    background: #30497d;
+  }
+  
+  .btn--android {
+    background-color: #a2c437;
+    color: #fff;
+  }
+  .btn--android:hover {
+    background: #88a42e;
+  }
+  
+  .btn--radius {
+    border-radius: 30px;
+  }

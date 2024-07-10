@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Remindly</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<main>
+  <div>
+    <span>meet</span>
+    <h1><img src="logo.png" height="40" /></h1>
+    <hr>
+    <p style="font-size: large; color: #fefeffd0;">Your simple reminder app that works like a to-do list.</p>
+    <br><br>
+    <button id="download" class="btn btn--android btn--radius">
+        <svg class="btn__logo" version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+           width="708.662px" height="708.662px" viewBox="0 0 708.662 708.662" enable-background="new 0 0 708.662 708.662"
+           xml:space="preserve">
+      <path id="c" fill="#FFFFFF" d="M607.229,229.405L607.229,229.405c-26.838,0-48.596,21.756-48.596,48.594v172.106
+          c0,26.838,21.758,48.594,48.596,48.594l0,0c26.839,0,48.595-21.756,48.595-48.594V277.997
+          C655.823,251.159,634.067,229.405,607.229,229.405z"/>
+      <path fill="#FFFFFF" d="M538.536,220.405c0-62.651-36.705-117.381-91.341-146.892l27.939-50.406
+          c3.523-6.357,1.228-14.368-5.131-17.893c-6.357-3.523-14.367-1.228-17.891,5.131l-28.973,52.267
+          c-21.274-7.918-44.514-12.287-68.859-12.287c-27.511,0-53.606,5.574-77.05,15.552l-30.781-55.53
+          c-3.524-6.357-11.534-8.654-17.892-5.131c-6.357,3.523-8.654,11.534-5.13,17.893l30.344,54.741
+          c-50.414,30.348-83.744,82.855-83.744,142.557L538.536,220.405L538.536,220.405z M264.242,148.322
+          c-6.039,0-10.933-4.895-10.933-10.933s4.895-10.935,10.933-10.935c6.038,0,10.933,4.896,10.933,10.935
+          S270.28,148.322,264.242,148.322z M434.322,148.322c-6.039,0-10.933-4.895-10.933-10.933c0-6.037,4.894-10.935,10.933-10.935
+          s10.932,4.896,10.932,10.935C445.253,143.427,440.361,148.322,434.322,148.322z"/>
+      <path fill="#FFFFFF" d="M170.241,240.093v269.753c0,24.602,19.943,44.545,44.545,44.545h17.06v92.115
+          c0,26.838,21.756,48.594,48.594,48.594s48.594-21.756,48.594-48.594v-92.115h40.496v92.115c0,26.838,21.756,48.594,48.594,48.594
+          s48.594-21.756,48.594-48.594v-92.115h27.486c24.602,0,44.545-19.943,44.545-44.545V240.093H170.241z"/>
+      <path id="c_2_" fill="#FFFFFF" d="M101.435,229.405L101.435,229.405c-26.838,0-48.596,21.756-48.596,48.594v172.106
+          c0,26.838,21.758,48.594,48.596,48.594l0,0c26.838,0,48.594-21.756,48.594-48.594V277.997
+          C150.028,251.159,128.272,229.405,101.435,229.405z"/>
+      </svg>
+      
+        <div class="btn__content btn__content--big">Download</div>
+        <div class="btn__content">for Android 11+</div>
+    </button>
+  </div>
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      
+        <div>
+            <center>
+          <img src="ss.png" height="480px;" />
+          
+        </center>
+        </div>
+      
+    </div>
+  </div>
+  <img src="nataraja.png" alt="" class="bg">
+  
+</main>
+
+<script>
+    var latest = "https://api.github.com/repos/mvishok/remindly/releases/latest";
+    var download = document.getElementById("download");
+    download.addEventListener("click", function() {
+        this.disabled = true;
+        fetch(latest)
+            .then(response => response.json())
+            .then(data => {
+                var assets = data.assets;
+                var apk = assets[0].browser_download_url;
+                window.location.href = apk;
+            });
+        this.disabled = false;
+    });
+</script>
+
+</body>
+</html>
